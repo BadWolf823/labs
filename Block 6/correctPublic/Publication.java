@@ -26,6 +26,7 @@ public class Publication {
         this.tag = tag;
         this.rating = rating;
     }
+    
 
     public String getName() {
         return name;

@@ -3,10 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package correctAlbum;
+package pack;
 
-import pack.Music;
-import pack.Album;
 import java.util.Arrays;
 
 /**
@@ -21,7 +19,7 @@ public class Music {
     public Music(String author, String name, Album album) {
         this.author = author;
         this.name = name;
-        this.album = album;
+        this.setAlbum(album);
     }
 
     public Music(String name, Album album) {
@@ -39,14 +37,13 @@ public class Music {
 
     public Album getAlbum() {
         return album;
-    }
+    } 
 
     public void setAlbum(Album album) {
         album.addMusic(this);
         this.album = album;
-        
     }
-    
+
     @Override
     public String toString() {
         String res = this.name + 
