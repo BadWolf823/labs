@@ -34,7 +34,7 @@ public class Gunner {
     }
     
     public void shoot(){
-        if (weapon == null) System.out.println("Не могу участвовать в перестрелке");
+        if (weapon == null) System.out.println("Не могу участвовать в перестрелке ");
         else weapon.shoot();
     }
     
