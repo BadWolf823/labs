@@ -3,9 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ru.muravyov.music.block6;
-
-import java.util.Arrays;
+package ru.muravyov.music.block13;
 
 /**
  *
@@ -14,7 +12,7 @@ import java.util.Arrays;
 public class Music {
     public String author;
     public String name;
-    private Album album;
+    Album album;
 
     public Music(String author, String name, Album album) {
         this.author = author;
@@ -40,7 +38,7 @@ public class Music {
     } 
 
     public void setAlbum(Album album) {
-        album.addMusic(this);
+        album.songs.add(this);
         this.album = album;
     }
 

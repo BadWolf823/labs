@@ -1,6 +1,7 @@
 package ru.muravyov.geometry;
 
-public class Point {
+
+public class Point implements Comparable<Point>, Cloneable{
 
     public int x, y;
 
@@ -17,7 +18,7 @@ public class Point {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
-        if (Point.class != o.getClass()) return false;
+        if (Point.class!= o.getClass()) return false;
         Point point = (Point) o;
         return x == point.x &&
                 y == point.y;
@@ -25,6 +26,18 @@ public class Point {
 
     @Override
     public int hashCode() {
-        return x / y + x +y;
+        return x + y;
+    }
+
+    @Override
+    public int compareTo(Point o) {
+        if (o.x > this.x && o.y > this.y) return -1;
+        if (o.x < this.x && o.y < this.y) return 1;
+        return 0;
+    }
+
+    @Override
+    protected Point clone() throws CloneNotSupportedException {
+        return (Point) super.clone();
     }
 }

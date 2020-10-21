@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ru.muravyov.music.block6;
+package ru.muravyov.music.block13;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class Album {
 
     public String name;
     public String author;
-    private final List<Music> songs = new ArrayList<>();
+    List<Music> songs = new ArrayList<>();
 
     Album(String name, String author) {
         this.name = name;
@@ -24,13 +24,11 @@ public class Album {
     }
 
     public void addMusic(Music music) {
-        if (!this.songs.contains(music)) {
-            if (music.getAlbum() != null) {
-                music.getAlbum().songs.remove(music);
-            }
-            this.songs.add(music);
-            music.setAlbum(this);
+        if (music.getAlbum() != null) {
+            music.album.songs.remove(music);
         }
+        this.songs.add(music);
+        music.album = this;
     }
 
     public Music[] getSongs() {
