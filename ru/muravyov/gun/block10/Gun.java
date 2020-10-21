@@ -24,8 +24,13 @@ public class Gun extends Weapon{
     public Gun(){
         this(0,30);
     }
-    
-    
+
+    public int clean() {
+        int count = 0;
+        while (this.getAmmo()) count++;
+        return count;
+    }
+
     @Override
     public void shoot() {
         if (this.getAmmo()) {
