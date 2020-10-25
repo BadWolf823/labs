@@ -1,4 +1,4 @@
-package ru.muravyov.main;
+package ru.muravyov.animals;
 
 import ru.muravyov.animals.Bird;
 import ru.muravyov.animals.Meowable;

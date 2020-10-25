@@ -33,4 +33,6 @@ public class Worker {
         return this.name + " работает в " + this.departament.name + ", начальник которого " + this.departament.getChief().name;
     }
 
+
+
 }

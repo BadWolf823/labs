@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ru.muravyov.main;
+package ru.muravyov.numbers;
 import static java.lang.Math.pow;
 import static java.lang.Double.parseDouble;
 /**

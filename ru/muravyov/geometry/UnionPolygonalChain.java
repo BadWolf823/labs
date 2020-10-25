@@ -1,4 +1,4 @@
-package ru.muravyov.main;
+package ru.muravyov.geometry;
 
 import ru.muravyov.geometry.Point;
 import ru.muravyov.geometry.Chainable;

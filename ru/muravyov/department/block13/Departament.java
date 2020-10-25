@@ -13,7 +13,7 @@ import java.util.List;
  * @author muravyovas
  */
 public class Departament {
-    String name;
+    public String name;
     Worker chief;
     List<Worker> workerList = new ArrayList<>();
     public Departament(String name){
