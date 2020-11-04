@@ -5,17 +5,19 @@
  */
 package ru.muravyov.numbers;
 
+import ru.muravyov.main.PublicCloneable;
+
 /**
  *
  * @author muravyovas
  */
-public final class Fraction extends Number{
-    final int numerator;
-    final int denominator;
+public final class Fraction extends Number implements PublicCloneable, Cloneable {
+    public final int numerator;
+    public final int denominator;
 
     public Fraction(int numerator, int denominator) throws ArithmeticException{
         this.numerator = numerator;
-        if (denominator <= 0) throw new ArithmeticException();
+        if (denominator < 0) throw new ArithmeticException();
         this.denominator = denominator;
     }
 
@@ -55,6 +57,7 @@ public final class Fraction extends Number{
 
     @Override
     public long longValue() {
+        if (this.denominator == 0) throw new FractionException("Denominator is zero", new ArithmeticException());
         return (long)this.numerator / this.denominator;
     }
 
@@ -80,5 +83,17 @@ public final class Fraction extends Number{
     @Override
     public int hashCode() {
         return denominator + numerator;
+    }
+
+    @Override
+    public Fraction clone(){
+        Fraction copyFraction;
+        try {
+            copyFraction = (Fraction) super.clone();
+        }
+        catch (CloneNotSupportedException e){
+            copyFraction = null;
+        }
+        return copyFraction;
     }
 }

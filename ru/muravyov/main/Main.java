@@ -1,16 +1,22 @@
 package ru.muravyov.main;
 
+import ru.muravyov.numbers.Fraction;
 
-import ru.muravyov.geometry.Figure;
-import ru.muravyov.structures.EconomyMutableListValues;
-import ru.muravyov.structures.FixListValues;
-import ru.muravyov.structures.MutableListValues;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-
-public class Main {
-    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
-
+public class Main{
+    public static void main(String[] args) {
+        Fraction fraction = new Fraction(3,1);
+        Fraction fraction1 = new Fraction(2,4);
+        Object[] objects = clone(fraction, fraction1);
+        for (Object obj : objects){
+            System.out.println(obj);
+        }
+    }
+    public static PublicCloneable[] clone(PublicCloneable ... obj){
+        PublicCloneable[] objects = new PublicCloneable[obj.length];
+        for(int i = 0; i < objects.length; i++){
+            objects[i] = (PublicCloneable) obj[i].clone();
+        }
+        return objects;
     }
 }
+
