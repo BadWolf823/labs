@@ -1,3 +1,4 @@
+
 package ru.muravyov.main;
 
 import ru.muravyov.numbers.Fraction;
@@ -22,4 +23,3 @@ public class Main{
         return (PublicCloneable) obj.clone();
     }
 }
-
