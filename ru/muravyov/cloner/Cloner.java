@@ -1,4 +1,4 @@
-package ru.muravyov.main;
+package ru.muravyov.cloner;
 
 public class Cloner {
     public static PublicCloneable[] clone(PublicCloneable ... obj){
