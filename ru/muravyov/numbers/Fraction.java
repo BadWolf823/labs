@@ -7,15 +7,18 @@ package ru.muravyov.numbers;
 
 import ru.muravyov.main.PublicCloneable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author muravyovas
  */
-public final class Fraction extends Number implements PublicCloneable, Cloneable {
+public final class Fraction extends Number implements PublicCloneable {
     public final int numerator;
     public final int denominator;
 
-    public Fraction(int numerator, int denominator) throws ArithmeticException{
+    public Fraction(int numerator, int denominator){
         this.numerator = numerator;
         if (denominator < 0) throw new ArithmeticException();
         this.denominator = denominator;
