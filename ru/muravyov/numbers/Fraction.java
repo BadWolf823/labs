@@ -5,10 +5,7 @@
  */
 package ru.muravyov.numbers;
 
-import ru.muravyov.main.PublicCloneable;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.muravyov.cloner.PublicCloneable;
 
 /**
  *
