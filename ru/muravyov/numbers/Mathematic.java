@@ -10,7 +10,7 @@ import static java.lang.Double.parseDouble;
  *
  * @author muravyovas
  */
-public class Mathematics {
+public class Mathematic {
     public static double sumator(Number ...numbers){
         double sum = 0.;
         for (Number number : numbers) sum+=number.doubleValue();
