@@ -69,8 +69,8 @@ class Name {
         @Override
         public Name getName() {
             Name name = new Name(secondName,firstName,patronymic);
-            int i = listName.indexOf(name);
-            if (i != -1) return listName.get(i);
+            int i;
+            if ((i = listName.indexOf(name)) != -1) return listName.get(i);
             listName.add(name);
             return name;
         }
