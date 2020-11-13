@@ -1,19 +1,22 @@
 package ru.muravyov.main;
 
 public class Prize {
+
+    public static final Prize AUTO = new Prize("Автомобиль");
+    public static final Prize EMPTY = new Prize(null);
+    public static final Prize FlAT = new Prize("Квартира");
+    public static final Prize CERTIFICATE = new Prize("Сертификат");
+
     private static final Prize[] prizes = new Prize[]{
-            new Prize("Автомобиль"),
-            new Prize(null),
-            new Prize("Квартира")
+            AUTO,
+            EMPTY,
+            FlAT,
+            CERTIFICATE
     };
 
     private final String text;
 
     private Prize(String text){this.text = text;}
-
-    public static Prize getPrizeFromList(int index){
-        return prizes[index];
-    }
 
     public static Prize getRandomPrize(){
         return prizes[(int) (Math.random() * prizes.length)];
