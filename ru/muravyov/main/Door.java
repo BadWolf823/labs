@@ -1,15 +1,28 @@
 package ru.muravyov.main;
 
-public class Door {
-    public static final Door ONE = new Door();
-    public static final Door TWO = new Door();
-    public static final Door THREE = new Door();
+abstract public class Door {
+    Prize[] prizes = new Prize[]{Prize.AUTO, Prize.CERTIFICATE, Prize.EMPTY, Prize.FlAT};
+    public static final Door ONE = new Door() {
+        @Override
+        public Prize open() {
+            return Prize.AUTO;
+        }
+    };
 
-    private Door(){};
+    public static final Door TWO = new Door(){
+        @Override
+        public Prize open() {
+            return Prize.EMPTY;
+        }
+    };
+    public static final Door THREE = new Door(){
+        @Override
+        public Prize open() {
+            return prizes[(int) (Math.random() * prizes.length)];
+        }
+    };
 
-    public Prize open(){
-        if (this == ONE) return Prize.AUTO;
-        if (this == TWO) return Prize.EMPTY;
-        return Prize.getRandomPrize();
-    }
+    private Door(){}
+
+    public abstract Prize open();
 }
