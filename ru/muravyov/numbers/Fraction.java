@@ -5,70 +5,77 @@
  */
 package ru.muravyov.numbers;
 
-import ru.muravyov.cloner.PublicCloneable;
+public final class Fraction<T extends Number> extends Number {
+    final double numerator;
+    final double denominator;
 
-/**
- *
- * @author muravyovas
- */
-public final class Fraction extends Number implements PublicCloneable {
-    public final int numerator;
-    public final int denominator;
-
-    public Fraction(int numerator, int denominator){
-        this.numerator = numerator;
-        if (denominator < 0) throw new ArithmeticException();
-        this.denominator = denominator;
+    public Fraction(T numerator, T denominator) throws ArithmeticException {
+        if (denominator.intValue() <= 0) throw new ArithmeticException();
+        this.numerator = numerator.doubleValue();
+        this.denominator = denominator.doubleValue();
     }
 
     @Override
     public String toString() {
-        return numerator+"/"+denominator;
+        return numerator + "/" + denominator;
     }
-    public Fraction sum(Fraction f){
-        if (this.denominator != f.denominator){
-            return new Fraction(this.numerator * f.denominator + f.numerator * this.denominator,this.denominator * f.denominator);
+
+    public Fraction<Double> sum(Fraction<?> f) {
+        if (this.denominator != f.denominator) {
+            return new Fraction<>(this.numerator * f.denominator + f.numerator * this.denominator, this.denominator * f.denominator);
         }
-        return new Fraction(this.numerator + f.numerator, f.denominator);
+        return new Fraction<>(this.numerator + f.numerator, f.denominator);
     }
-    public Fraction sum(int x){return this.sum(new Fraction(x,1));}
-    public Fraction minus(Fraction f){
-        if (this.denominator != f.denominator){
-            return new Fraction(this.numerator * f.denominator - f.numerator * this.denominator,this.denominator * f.denominator);
+
+    public Fraction<Double> sum(int x) {
+        return this.sum(new Fraction<>(x, 1));
+    }
+
+    public Fraction<Double> minus(Fraction<?> f) {
+        if (this.denominator != f.denominator) {
+            return new Fraction<>(this.numerator * f.denominator - f.numerator * this.denominator, this.denominator * f.denominator);
         }
-        return new Fraction(this.numerator - f.numerator, f.denominator);
+        return new Fraction<>(this.numerator - f.numerator, f.denominator);
     }
-    public Fraction minus(int x){return this.minus(new Fraction(x, 1));}
-    public Fraction div(Fraction f){
-        return new Fraction(this.numerator * f.denominator, this.denominator * f.numerator);
+
+    public Fraction<Double> minus(int x) {
+        return this.minus(new Fraction<>(x, 1));
     }
-    public Fraction div(int x){return this.div(new Fraction(x, 1));}
-    public Fraction multiplication(Fraction f){
-        return new Fraction(this.numerator * f.numerator, this.denominator * f.denominator);
+
+    public Fraction<Double> div(Fraction<?> f) {
+        return new Fraction<>(this.numerator * f.denominator, this.denominator * f.numerator);
     }
-    public Fraction multiplication(int x){
-        return this.multiplication(new Fraction(x, 1));
+
+    public Fraction<Double> div(int x) {
+        return this.div(new Fraction<>(x, 1));
+    }
+
+    public Fraction<Double> multiplication(Fraction<?> f) {
+        return new Fraction<>(this.numerator * f.numerator, this.denominator * f.denominator);
+    }
+
+    public Fraction<Double> multiplication(int x) {
+        return this.multiplication(new Fraction<>(x, 1));
     }
 
     @Override
     public int intValue() {
-        return (int)(this.longValue());
+        return (int) (this.longValue());
     }
 
     @Override
     public long longValue() {
-        if (this.denominator == 0) throw new FractionException("Denominator is zero", new ArithmeticException());
-        return (long)this.numerator / this.denominator;
+        return (long) (this.numerator / this.denominator);
     }
 
     @Override
     public float floatValue() {
-        return (float)this.numerator / this.denominator;
+        return (float) (this.numerator / this.denominator);
     }
 
     @Override
     public double doubleValue() {
-        return (double)this.numerator / this.denominator;
+        return this.numerator / this.denominator;
     }
 
     @Override
@@ -76,24 +83,14 @@ public final class Fraction extends Number implements PublicCloneable {
         if (o == null) return false;
         if (o == this) return true;
         if (o.getClass() != Fraction.class) return false;
-        Fraction fraction = (Fraction)o;
-        return (fraction.denominator == this.denominator)&&(fraction.numerator == this.numerator);
+        Fraction<?> fraction = (Fraction<?>) o;
+        return
+                (Double.compare(fraction.denominator, denominator) == 0) &&
+                        (Double.compare(fraction.numerator, numerator) == 0);
     }
 
     @Override
     public int hashCode() {
-        return denominator + numerator;
-    }
-
-    @Override
-    public Fraction clone(){
-        Fraction copyFraction;
-        try {
-            copyFraction = (Fraction) super.clone();
-        }
-        catch (CloneNotSupportedException e){
-            copyFraction = null;
-        }
-        return copyFraction;
+        return (int) (denominator + numerator);
     }
 }
