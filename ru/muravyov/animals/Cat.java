@@ -5,13 +5,9 @@
  */
 package ru.muravyov.animals;
 
-/**
- *
- * @author muravyovas
- */
 public class Cat implements Meowable{
-    String name;
-    Cat(String name){
+    private final String name;
+    public Cat(String name){
         this.name = name;
     }
 
@@ -19,8 +15,7 @@ public class Cat implements Meowable{
     public String toString() {
         return "кот: " + this.name;
     }
-    
-    
+
     public void meow(int n){
         String resStr = this.name + ": ";
         for (int i = 0; i < n-1; i++){

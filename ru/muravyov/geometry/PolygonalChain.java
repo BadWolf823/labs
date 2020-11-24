@@ -14,7 +14,7 @@ import java.util.List;
  * @author muravyovas
  */
 
-public class PolygonalChain implements Chainable{
+public class PolygonalChain implements Chainable, Lengthable{
     public List<Point> points = new ArrayList<>();
 
     public PolygonalChain(Point ...points){

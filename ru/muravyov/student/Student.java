@@ -7,26 +7,28 @@ package ru.muravyov.student;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  *
  * @author muravyovas
  */
-public class Student {
+public class Student<T> {
 
     String name;
-    private final List<Integer> marks = new ArrayList<>();
+    private final List<T> marks = new ArrayList<>();
+    Predicate<T> border;
 
-    Student(String name) throws Exception {
-        this(name, null);
+    public Student(String name, Predicate<T> border){
+        this(name, border, null);
     }
 
-    Student(String name, int... marks) throws Exception {
+    public Student(String name,Predicate<T> border, T ... marks){
         this.name = name;
+        this.border = border;
         if (marks != null){
             for (int i = 0; i < marks.length; i++){
-                if ((marks[i] < 2)||(marks[i] > 5)) throw new Exception("Unsupported mark");
-                this.marks.add(marks[i]);
+                this.addMark(marks[i]);
             }
         }
     }
@@ -36,6 +38,7 @@ public class Student {
         return this.name + ":" + this.marks;
     }
 
+/*
     public double getAverage() {
         if (marks.size() == 0) {
             return 0.;
@@ -53,13 +56,16 @@ public class Student {
         }
         return true;
     }
-
-    public Integer[] getMarks(){
-        return this.marks.toArray(marks.toArray(new Integer[0]));
+*/
+    public List<T> getMarks(){
+        return new ArrayList<>(this.marks);
     }
 
-    public void addMarks(int mark){
-        if ((mark < 2)||(mark > 5)) throw new IllegalArgumentException("Unsupported mark");
-        this.marks.add(mark);
+    public void addMark(T mark){
+        if (border.test(mark)) this.marks.add(mark);
     }
 }
+
+
+
+

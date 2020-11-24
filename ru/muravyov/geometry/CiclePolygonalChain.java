@@ -5,7 +5,7 @@
  */
 package ru.muravyov.geometry;
 
-public class CiclePolygonalChain extends PolygonalChain{
+public class CiclePolygonalChain extends PolygonalChain implements Lengthable{
     public CiclePolygonalChain(Point ...points) {
         super(points);
     }
