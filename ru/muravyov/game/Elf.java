@@ -1,27 +1,16 @@
 package ru.muravyov.game;
 
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-public class Elf implements WarUnit, EffectUnit{
+public class Elf implements WarUnit, Effectable {
     protected int health = 150;
-    protected int damage = 5;
-    private Supplier<Integer> attack = ()-> this.damage;
-    private Predicate<Integer> defend = x -> {
-        this.health -= this.damage;
-        return this.health > 0;
-    };
-
+    private StateElf state = StateElf.CALM;
     @Override
     public int attack() {
-        return attack.get();
+        return state.attack();
     }
 
     @Override
     public boolean defend(int damage) {
-
-        System.out.println("Эльфу был нанесён урон " + damage);
-        return defend.test(damage);
+        return state.defend(this, damage);
     }
 
     @Override
@@ -31,7 +20,7 @@ public class Elf implements WarUnit, EffectUnit{
 
     @Override
     public void addDamage() {
-        damage += 5;
+        state = StateElf.ANGRY;
     }
 
     @Override
@@ -46,17 +35,67 @@ public class Elf implements WarUnit, EffectUnit{
     }
 
     @Override
-    public void setAttack(Supplier<Integer> attack) {
-        this.attack = attack;
-    }
-
-    @Override
-    public void setDefend(Predicate<Integer> defend) {
-        this.defend = defend;
-    }
-
-    @Override
     public int getHealth() {
         return this.health;
+    }
+
+    private enum StateElf{
+        CALM {
+            @Override
+            public int attack() {
+                return 0;
+            }
+            @Override
+            public boolean defend(Elf unit, int damage) {
+                unit.state = NORMAL;
+                return true;
+            }
+        },
+        NORMAL {
+            @Override
+            public int attack() {
+                return 10;
+            }
+            @Override
+            public boolean defend(Elf unit, int damage) {
+                if (unit.health <= damage) {
+                    unit.health = 0;
+                    unit.state = StateElf.DEAD;
+                    return false;
+                }
+                unit.health -= damage;
+                return true;
+            }
+        },
+        ANGRY {
+            @Override
+            public int attack() {
+                return 40;
+            }
+
+            @Override
+            public boolean defend(Elf unit, int damage) {
+                if (unit.health <= damage) {
+                    unit.health = 0;
+                    unit.state = StateElf.DEAD;
+                    return false;
+                }
+                unit.health -= damage;
+                return true;
+            }
+        },
+        DEAD {
+            @Override
+            public int attack() {
+                return 0;
+            }
+
+            @Override
+            public boolean defend(Elf elf, int damage) {
+                return false;
+            }
+        };
+        abstract public int attack();
+        abstract public boolean defend(Elf elf, int damage);
     }
 }

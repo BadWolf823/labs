@@ -20,18 +20,17 @@ public class DefenderWarUnitDecorator extends WarUnitDecorator{
     }
 
     @Override
-    public void setAttack(Supplier<Integer> attack) {
-        unit.setAttack(attack);
-    }
-
-    @Override
-    public void setDefend(Predicate<Integer> defend) {
-        unit.setDefend(defend);
-    }
-
-    @Override
     public int getHealth() {
         return 0;
     }
 
+    @Override
+    public void addHealth() {
+
+    }
+
+    @Override
+    public void addDamage() {
+
+    }
 }

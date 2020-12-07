@@ -1,30 +1,30 @@
 package ru.muravyov.game;
 
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-public class Orc implements EffectUnit, WarUnit{
-    private int health = 100;
-    private int damage = 10;
-    private Supplier<Integer> attack = ()-> this.damage;
-    private Predicate<Integer> defend = x -> {
-        this.health -= this.damage;
-        return this.health > 0;
-    };
-
+public class Orc implements WarUnit, Effectable {
+    protected int health = 150;
+    private StateOrc state = StateOrc.CALM;
     @Override
     public int attack() {
-        return attack.get();
+        return state.attack();
     }
 
     @Override
     public boolean defend(int damage) {
-        System.out.println("Орку был нанесён урон " + damage);
-        return defend.test(damage);
+        return state.defend(this, damage);
     }
 
     @Override
-    public Orc clone() {
+    public void addHealth() {
+        health += 10;
+    }
+
+    @Override
+    public void addDamage() {
+        state = StateOrc.ANGRY;
+    }
+
+    @Override
+    public Orc clone(){
         Orc newOrc;
         try {
             newOrc = (Orc) super.clone();
@@ -35,69 +35,67 @@ public class Orc implements EffectUnit, WarUnit{
     }
 
     @Override
-    public void setAttack(Supplier<Integer> attack) {
-        this.attack = attack;
-    }
-
-    @Override
-    public void setDefend(Predicate<Integer> defend) {
-        this.defend = defend;
-    }
-
-    @Override
     public int getHealth() {
-        return health;
+        return this.health;
     }
 
-
-    @Override
-    public void addHealth() {
-        health +=5;
-    }
-
-    @Override
-    public void addDamage() {
-        damage += 10;
-    }
-
-    enum State{
-        CALM{
+    private enum StateOrc{
+        CALM {
             @Override
             public int attack() {
                 return 0;
             }
-
             @Override
-            public boolean defend(int x) {
+            public boolean defend(Orc unit, int damage) {
+                unit.state = NORMAL;
                 return true;
             }
         },
-        NORMAL{
+        NORMAL {
             @Override
             public int attack() {
-                return 0;
+                return 10;
             }
-
             @Override
-            public boolean defend(int x) {
-                return false;
+            public boolean defend(Orc unit, int damage) {
+                if (unit.health <= damage) {
+                    unit.health = 0;
+                    unit.state = StateOrc.DEAD;
+                    return false;
+                }
+                unit.health -= damage;
+                return true;
             }
         },
-        DEAD{
+        ANGRY {
+            @Override
+            public int attack() {
+                return 40;
+            }
+
+            @Override
+            public boolean defend(Orc unit, int damage) {
+                if (unit.health <= damage) {
+                    unit.health = 0;
+                    unit.state = StateOrc.DEAD;
+                    return false;
+                }
+                unit.health -= damage;
+                return true;
+            }
+        },
+        DEAD {
             @Override
             public int attack() {
                 return 0;
             }
 
             @Override
-            public boolean defend(int x) {
+            public boolean defend(Orc unit, int damage) {
                 return false;
             }
-        }
-        ;
-
-        public abstract int attack();
-        public abstract boolean defend(int x);
-
+        };
+        abstract public int attack();
+        abstract public boolean defend(Orc unit, int damage);
     }
 }

@@ -1,6 +1,6 @@
 package ru.muravyov.game;
 
-public interface EffectUnit {
+public interface Effectable {
     void addHealth();
     void addDamage();
 }
