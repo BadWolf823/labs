@@ -1,133 +1,214 @@
 package ru.muravyov.main;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class Main {
+
     public static void main(String[] args) {
-        Student student = new Student("B",List.of(2,3,4));
-        Student student1 = new Student("C", List.of(5,3));
-        Student student2 = new Student("D");
-        Report report = new Report(student, student1, student2);
-        report.print();
+
     }
 }
 
-class Student implements Observable, Cloneable{
+class Student implements Reactable {
+
     private String name;
-    private List<Integer> marks = new ArrayList<>();
-    private List<Observer> list = new ArrayList<>();
+    private List<Integer> marks = new ArrayList();
+    private List<MarkReactable> toReact = new ArrayList<MarkReactable>();
 
-    public Student(String name, List<Integer> marks,List<Observer> list) {
+    public Student(String name, Parent parent) {
         this.name = name;
-        if (list != null) this.list.addAll(list);
-        for (var mark : marks) {
-            this.addMark(mark);
+        if (parent == null) {
+            throw new IllegalArgumentException("parent must be");
+        }
+        toReact.add(parent);
+    }
+
+    public Student(Student std) {
+        std.name = this.name;
+        std.marks = new ArrayList(marks);
+        std.toReact = new ArrayList(toReact);
+    }
+
+    public int addMark(int m) {
+        if (m < 2 && m > 5) {
+            throw new IllegalArgumentException();
+        }
+        marks.add(m);
+        for (MarkReactable tmp : toReact) {
+            tmp.markReact(m);
+        }
+        return marks.size() - 1;
+    }
+
+    public void editMark(int i, int newM) {
+        marks.set(i, newM);
+    }
+
+    public int getMark(int i) {
+        return marks.get(i);
+    }
+
+    public void removeMark(int indexMark){
+        marks.remove(marks.indexOf(indexMark));
+    }
+
+    public List<Integer> getMarks() {
+        return new ArrayList(marks);
+    }
+
+    public void addReact(MarkReactable smth) {
+        toReact.add(smth);
+    }
+
+    public MarkReactable removeReact(MarkReactable smth) {
+        return toReact.remove(toReact.indexOf(smth));
+    }
+
+    @Override
+    public String toString() {
+        return name + ": " + marks + "\n";
+    }
+
+}
+
+class Parent implements MarkReactable {
+
+    public void markReact(int mark) {
+        if (mark == 5) {
+            System.out.println("very OK");
+            return;
+        }
+        if (mark == 4) {
+            System.out.println("OK");
+            return;
+        }
+        if (mark == 3){
+            System.out.println("Bad");
+            return;
+        }
+        if (mark == 2){
+            System.out.println("very bad");
         }
     }
+}
 
-    public Student(String name, List<Integer> marks) {
-        this(name, marks, null);
+interface MarkReactable {
+
+    public void markReact(int mark);
+}
+
+interface Reactable {
+
+    public void addReact(MarkReactable smth);
+
+    public MarkReactable removeReact(MarkReactable smth);
+}
+
+class Report implements ReStorable {
+
+    private Deque<Command> commands = new LinkedList<>();
+    private Deque<Command> commandsCanceled = new LinkedList<>();
+
+    List<Student> list = new ArrayList<Student>();
+
+    public void addStudent(Student std) {
+        list.add(std);
     }
 
-    public Student(String name) {
-        this (name, new ArrayList<>(), null);
+    public Student removeStudent(Student std) {
+        return list.remove(list.indexOf(std));
     }
 
-    public void addMark(int mark){
-        if ((mark >= 2)&&(mark <= 5)) marks.add(mark);
-        list.forEach(x-> x.notify(mark));
+    public void addMark(int indedxOfS, int mark){
+        Command command = new AddMarkCommand(this,indedxOfS,mark);
+        command.execute();
+        commands.push(command);
+        commandsCanceled.clear();
     }
 
-    public void remMark(int mark){
-        list.remove(mark);
+    public void editMark(int indexOfM, int indexOfS, int newMark) {
+        list.get(indexOfS).editMark(indexOfM, newMark);
     }
 
-    public void editMark(int indexOldMark, int mark){
-        marks.set(indexOldMark, mark);
+    public void print() {
+        System.out.println(list);
     }
 
-    public String getName() {
-        return name;
-    }
-    public Integer[] getMarks(){
-        return marks.toArray(new Integer[marks.size()]);
+    public void cancelLastCommand(){
+        Command command;
+        if ((command = commands.pop()) == null) return;
+        commandsCanceled.push(command);
+        command.cancel();
     }
 
     @Override
-    public void addListener(Observer listener){
-        list.add(listener);
+    public Snapshot save() {
+        Report toSave = new Report();
+        list.forEach(t -> {
+            toSave.addStudent(new Student(t));
+        });
+        return new Snapshot(toSave);
     }
 
     @Override
-    public void removeListener(Observer listener){
-        list.remove(listener);
+    public void restore(Snapshot snapshot) {
+        Report tmp = snapshot.storedReport;
+        this.list = new ArrayList<>();
+        tmp.list.forEach(s -> {
+            this.list.add(new Student(s));
+        });
+    }
+
+}
+
+class AddMarkCommand implements Command{
+    private Report report;
+    private Student student;
+    private int mark;
+    int indexMark;
+
+    public AddMarkCommand(Report report, int indexOfS, int mark) {
+        this.report = report;
+        this.student = report.list.get(indexOfS);
+        this.mark = mark;
     }
 
     @Override
-    public Observer[] getObservers() {
-        return list.toArray(new Observer[list.size()]);
+    public void execute() {
+        indexMark = student.addMark(mark);
     }
 
     @Override
-    public Student clone(){
-        Student st;
-        try{
-            st = (Student) super.clone();
-        } catch (CloneNotSupportedException e) {
-            st = null;
-        }
-        st.marks = new ArrayList<>(marks);
-        return st;
+    public void cancel() {
+        student.removeMark(indexMark);
     }
 }
 
-class Parent implements Observer{
-    @Override
-    public void notify(int mark){
-        if (mark == 2) System.out.println("Плохо");
-        else if (mark == 3) System.out.println("Не хорошо");
-        else if (mark == 4) System.out.println("Хорошо");
-        else if (mark == 5) System.out.println("Отлично");
-    }
+interface Command{
+
+    void execute();
+
+    void cancel();
+
 }
 
-interface Observer{
-    void notify(int mark);
+interface ReStorable {
+
+    Snapshot save();
+
+    void restore(Snapshot snapshot);
+
 }
 
-interface Observable{
-    void addListener(Observer listener);
-    void removeListener(Observer listener);
-    Observer[] getObservers();
-}
+class Snapshot {
 
-class Report{
-    List<Student> studentList;
-    Report(Student ... students){
-        studentList = Arrays.asList(students);
+    Report storedReport;
+
+    public Snapshot(Report storedReport) {
+        this.storedReport = storedReport;
     }
-    public void print(){
-        for (var student : studentList){
-            System.out.println(student.getName() + ':' + Arrays.toString(student.getMarks()));
-        }
-    }
-    public void removeMark(int indexStudent, int mark){
-        studentList.get(indexStudent).remMark(mark);
-    }
-    public void addMark(int indexStudent, int mark){
-        studentList.get(indexStudent).addMark(mark);
-    }
-    public void editMark(int indexStudent, int indexOldMark, int newMark){
-        studentList.get(indexStudent).editMark(indexOldMark, newMark);
-    }
-    public List<Student> save(){
-        List<Student> cloneStudents = List.copyOf(List.of());
-        studentList.forEach(st->st = st.clone());
-        return cloneStudents;
-    }
-    public void restore(List<Student> studentList){
-        this.studentList = studentList;
-    }
+
 }
 
 
